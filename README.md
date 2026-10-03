@@ -1,5 +1,5 @@
 # planka-notify
-Sends an email when a planka task is due today. It's a hacky, thrown together thing that panics on every error and doesn't check if the required env vars are set. But it works!
+Sends an email when a planka task is due today. It's a hacky, thrown together thing that doesn't check if the required env vars are set. But it works!
 
 Behaviour:
 - If a task is due today, it will send an email with the task's name as the subject and a link to it in the body

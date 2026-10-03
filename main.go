@@ -120,6 +120,17 @@ type BoardsResp struct {
 }
 
 func main() {
+	start := time.Now()
+	defer func() {
+		if r := recover(); r != nil {
+			duration := int(time.Now().Sub(start).Seconds())
+			fmt.Printf("[%s] error after %d seconds: %s\n", start.Format("2006-01-02"), duration, r)
+			os.Exit(1)
+		}
+	}()
+
+	fmt.Printf("[%s] Starting execution\n", start.Format("2006-01-02"))
+
 	// get projects
 	projectsBytes, err := PlankaGet("/projects")
 	if err != nil {
@@ -146,7 +157,7 @@ func main() {
 
 		for _, card := range boards.Included.Cards {
 			// get cards that are incomplete and due today
-			if !card.IsClosed && card.DueDate != nil && sameDay(*card.DueDate, time.Now()) {
+			if !card.IsClosed && card.DueDate != nil && sameDay(*card.DueDate, start) {
 				cards = append(cards, card)
 			}
 		}
@@ -158,6 +169,9 @@ func main() {
 			panic(err)
 		}
 	}
+
+	duration := int(time.Now().Sub(start).Seconds())
+	fmt.Printf("[%s] Complete! Sent %d emails. Took %d seconds.\n", start.Format("2006-01-02"), len(cards), duration)
 }
 
 func PlankaGet(path string) ([]byte, error) {
